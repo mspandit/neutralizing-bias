@@ -15,7 +15,7 @@ from seq2seq.utils import dump_outputs
 class JointModel(nn.Module):
     def __init__(self, debias_model, tagging_model):
         super(JointModel, self).__init__()
-    
+
         # TODO SHARING EMBEDDINGS FROM DEBIAS
         self.debias_model = debias_model
         self.tagging_model = tagging_model
@@ -30,7 +30,7 @@ class JointModel(nn.Module):
     def run_tagger(self, pre_id, pre_mask, rel_ids=None, pos_ids=None,
                    categories=None):
         _, tok_logits = self.tagging_model(
-            pre_id, attention_mask=1.0 - pre_mask, rel_ids=rel_ids,
+            pre_id, attention_mask=pre_mask.logical_not(), rel_ids=rel_ids,
             pos_ids=pos_ids, categories=categories)
 
         tok_probs = tok_logits[:, :, :2]
